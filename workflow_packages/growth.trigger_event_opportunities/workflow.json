@@ -1,0 +1,71 @@
+{
+  "package_format": "tin-workflow-package-v1",
+  "definition": {
+    "key": "growth.trigger_event_opportunities",
+    "title": "Find Trigger-Based Growth Opportunities",
+    "description": "Identify potential customers showing recent business events that create a timely reason for targeted outreach.",
+    "version": "1.0.0",
+    "executor": "workflow.code",
+    "schedule_modes": ["on_demand"],
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "company_description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 5000,
+          "title": "Product or company description"
+        },
+        "ideal_customer_profile": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 5000,
+          "title": "Ideal customer profile"
+        },
+        "target_market": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000,
+          "title": "Target market or geography"
+        },
+        "trigger_events": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000,
+          "title": "Relevant trigger events"
+        },
+        "opportunity_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20,
+          "title": "Number of opportunities"
+        }
+      },
+      "required": [
+        "project_id",
+        "company_description",
+        "ideal_customer_profile",
+        "target_market",
+        "trigger_events",
+        "opportunity_count"
+      ]
+    },
+    "code": {
+      "runtime": "python3.12.8-stdlib-v1",
+      "entrypoint": "main.py",
+      "files": ["main.py"],
+      "timeout_seconds": 30,
+      "output": {
+        "kind": "project.artifact",
+        "path": "reports/TRIGGER_EVENT_OPPORTUNITIES.md",
+        "media_type": "text/markdown",
+        "max_bytes": 12000
+      }
+    }
+  }
+}
