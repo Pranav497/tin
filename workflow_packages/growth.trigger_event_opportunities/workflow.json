@@ -2,11 +2,15 @@
   "package_format": "tin-workflow-package-v1",
   "definition": {
     "key": "growth.trigger_event_opportunities",
-    "title": "Find Trigger-Based Growth Opportunities",
-    "description": "Identify potential customers showing recent business events that create a timely reason for targeted outreach.",
-    "version": "1.0.0",
+    "title": "Prioritize Trigger-Event Growth Opportunities",
+    "description": "Review a founder-supplied list of target companies and business signals, then identify which opportunities have the strongest timely reason for targeted outreach.",
+    "version": "1.1.0",
     "executor": "workflow.code",
     "schedule_modes": ["on_demand"],
+    "human_review": {
+      "eligible": true,
+      "summary": "Review the prioritized trigger-event opportunities before outreach"
+    },
     "input_schema": {
       "type": "object",
       "additionalProperties": false,
@@ -33,16 +37,16 @@
           "maxLength": 1000,
           "title": "Target market or geography"
         },
-        "trigger_events": {
+        "candidate_companies": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 3000,
-          "title": "Relevant trigger events"
+          "maxLength": 12000,
+          "title": "Candidate companies and recent signals"
         },
         "opportunity_count": {
           "type": "integer",
           "minimum": 1,
-          "maximum": 20,
+          "maximum": 10,
           "title": "Number of opportunities"
         }
       },
@@ -51,7 +55,7 @@
         "company_description",
         "ideal_customer_profile",
         "target_market",
-        "trigger_events",
+        "candidate_companies",
         "opportunity_count"
       ]
     },
@@ -59,7 +63,16 @@
       "runtime": "python3.12.8-stdlib-v1",
       "entrypoint": "main.py",
       "files": ["main.py"],
-      "timeout_seconds": 30,
+      "timeout_seconds": 60,
+      "model_routes": {
+        "prioritize": {
+          "provider": "openai",
+          "model": "gpt-5.6-luna",
+          "max_calls": 1,
+          "max_input_bytes": 16000,
+          "max_output_tokens": 2048
+        }
+      },
       "output": {
         "kind": "project.artifact",
         "path": "reports/TRIGGER_EVENT_OPPORTUNITIES.md",
